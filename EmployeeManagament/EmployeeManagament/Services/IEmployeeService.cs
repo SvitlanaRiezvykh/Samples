@@ -15,11 +15,11 @@ namespace EmployeeManagament.Services
 
         [OperationContract]
         [WebGet(UriTemplate = "/employees/id/{id}", ResponseFormat = WebMessageFormat.Json)]
-        EmployeeDto GetEmployeesById(string id);
+        EmployeeDto GetEmployeeById(string id);
 
         [OperationContract]
         [WebGet(UriTemplate = "/employees/specialization/{specialization}", ResponseFormat = WebMessageFormat.Json)]
-        EmployeeDto GetEmployeesBySpecialization(string specialization);
+        IEnumerable<EmployeeDto> GetEmployeesBySpecialization(string specialization);
 
         [OperationContract]
         [WebInvoke(UriTemplate = "/add",
@@ -31,7 +31,7 @@ namespace EmployeeManagament.Services
 
         [OperationContract]
         [WebInvoke(UriTemplate = "/update/id/{id}",
-                    Method = "PUT",
+                    Method = "POST",
                     RequestFormat = WebMessageFormat.Json,
                     ResponseFormat = WebMessageFormat.Json)]
         void UpdateEmployee(EmployeeDto employeeDto, string id);

@@ -8,7 +8,7 @@ namespace EmployeeManagament.Services
     {
         IEnumerable<Employee> GetEmployees();
         Employee GetEmployeeById(string id);
-        Employee GetEmployeeBySpecialization(string specialization);
+        IEnumerable<Employee> GetEmployeesBySpecialization(string specialization);
         void Create(Employee employeeToCreate);
         void UpdateById(Employee employeeToUpdate);
     }

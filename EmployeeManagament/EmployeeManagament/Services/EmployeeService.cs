@@ -11,14 +11,23 @@ namespace EmployeeManagament.Services
 {
     public class EmployeeService : IEmployeeService
     {
-        readonly IEmployeeRepository EmployeeRepository = new EmployeeRepository();
+        readonly IEmployeeRepository EmployeeRepository;
+        public EmployeeService()
+        {
+            EmployeeRepository = new EmployeeRepository();
+        }
+
+        public EmployeeService(IEmployeeRepository employeeRepository)
+        {
+            EmployeeRepository = employeeRepository;
+        }
 
         public IEnumerable<EmployeeDto> GetEmployees()
         {
             return EmployeeRepository.GetEmployees().ToEmloyeeDtoCollection();
         }
 
-        public EmployeeDto GetEmployeesById(string id)
+        public EmployeeDto GetEmployeeById(string id)
         {
             if (!int.TryParse(id, out _))
             {
@@ -28,62 +37,25 @@ namespace EmployeeManagament.Services
             return GetEmployees(id, (x) => EmployeeRepository.GetEmployeeById(x)).ToEmloyeeDto();
         }
 
-        public EmployeeDto GetEmployeesBySpecialization(string specialization)
+        public IEnumerable<EmployeeDto> GetEmployeesBySpecialization(string specialization)
         {
-            return GetEmployees(specialization, (x) => EmployeeRepository.GetEmployeeBySpecialization(x)).ToEmloyeeDto();
+            return GetEmployees(specialization, (x) => EmployeeRepository.GetEmployeesBySpecialization(x)).ToEmloyeeDtoCollection();
         }
 
         public void AddEmployee(EmployeeDto employeeDto)
         {
-            if (employeeDto == null)
-            {
-                throw new WebFaultException<string>("Employee data shold be provided!", HttpStatusCode.BadRequest);
-            }
-
-            if (employeeDto.Specialization.Equals("Manager") && string.IsNullOrEmpty(employeeDto.TeamMembers))
-            {
-                throw new WebFaultException<string>("Team members data shold be provided for employee with Manager spetialization!", HttpStatusCode.BadRequest);
-            }
-
-            Employee employeeToCreate = new Employee()
-            {
-                Specialization = employeeDto.Specialization,
-                Experience = Convert.ToDouble(employeeDto.Experience),
-                Name = employeeDto.Name,
-                Position = employeeDto.Position,
-                Salary = Convert.ToInt32(employeeDto.Salary),
-                TeamMembers = employeeDto.TeamMembers
-            };
+            employeeDto.ValidateEmployeeData();
+            Employee employeeToCreate = employeeDto.ToEmloyee();
 
             EmployeeRepository.Create(employeeToCreate);
 
             WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.Created;
-            //WebOperationContext.Current.OutgoingResponse.StatusDescription = "Employee has been created";
         }
 
         public void UpdateEmployee(EmployeeDto employeeDto, string id)
         {
-            if (employeeDto == null)
-            {
-                throw new WebFaultException<string>("Employee data shold be provided!", HttpStatusCode.BadRequest);
-            }
-
-            if (employeeDto.Specialization != null && employeeDto.Specialization.Equals("Manager")
-                && string.IsNullOrEmpty(employeeDto.TeamMembers))
-            {
-                throw new WebFaultException<string>("Team members data shold be provided for employee with Manager spetialization!", HttpStatusCode.BadRequest);
-            }
-
-            Employee employeeToCreate = new Employee()
-            {
-                Id = Convert.ToInt32(id),
-                Specialization = employeeDto.Specialization,
-                Experience = Convert.ToDouble(employeeDto.Experience),
-                Name = employeeDto.Name,
-                Position = employeeDto.Position,
-                Salary = Convert.ToInt32(employeeDto.Salary),
-                TeamMembers = employeeDto.TeamMembers
-            };
+            employeeDto.ValidateEmployeeData();
+            Employee employeeToCreate = employeeDto.ToEmloyee(id);
 
             try
             {
@@ -95,7 +67,7 @@ namespace EmployeeManagament.Services
             }
         }
 
-        private Employee GetEmployees(string value, Func<string, Employee> getEmployeeFunc)
+        private T GetEmployees<T>(string value, Func<string, T> getEmployeeFunc)
         {
             if (string.IsNullOrEmpty(value))
             {

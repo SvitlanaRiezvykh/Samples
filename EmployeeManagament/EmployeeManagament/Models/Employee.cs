@@ -1,8 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
-using System.Xml.Serialization;
-
-namespace EmployeeManagament.Models
+﻿namespace EmployeeManagament.Models
 {
     public class Employee
     {

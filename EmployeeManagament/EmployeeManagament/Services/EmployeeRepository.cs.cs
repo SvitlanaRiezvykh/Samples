@@ -28,9 +28,9 @@ namespace EmployeeManagament.Services
             return GetEmployees().FirstOrDefault(x => x.Id == id);
         }
 
-        public Employee GetEmployeeBySpecialization(string specialization)
+        public IEnumerable<Employee> GetEmployeesBySpecialization(string specialization)
         {
-            return GetEmployees().FirstOrDefault(x => x.Specialization == specialization);
+            return GetEmployees().Where(x => x.Specialization == specialization);
         }
 
         public void Create(Employee employeeToCreate)
@@ -40,7 +40,6 @@ namespace EmployeeManagament.Services
             employeeToCreate.Id = lastEmployee.Id + 1;
 
             var contentBuilder = new XElementBuilder();
-
             var content = contentBuilder.AddNodeIfNotEmpty("Id", employeeToCreate.Id.ToString())
                                         .AddNodeIfNotEmpty("Specialization", employeeToCreate.Specialization)
                                         .AddNodeIfNotEmpty("Position", employeeToCreate.Position)

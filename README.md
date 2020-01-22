@@ -21,6 +21,6 @@ Application would run at http://localhost:8080/EmployeeManagament
 | ------------- |:-------------:|:--------:| ----------|
 | Get employees  | GET | /employees | - | 
 | Get employee by Id  | GET | /employees/id/{id} | - |
-| Get employee by Specialization   | GET | /employees/specialization /{specialization } | - |
+| Get employees by Specialization   | GET | /employees/specialization /{specialization } | - |
 | Create Employee    | POST      | /add  | {"Experience": 3,"Name": "Inna","Position": "Junior","Salary": 70,"Specialization": "Manager","TeamMembers":"12"} |
-| Update Employee    | PUT      | /update/id/{id}  | {"Experience": "2","Name": "Vills","Salary": "5"} |
+| Update Employee    | POST      | /update/id/{id}  | {"Experience": "2","Name": "Vills","Salary": "5"} |
