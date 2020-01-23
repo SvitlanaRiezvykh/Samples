@@ -20,7 +20,6 @@ namespace EmployeeManagament.Tests
             mockRepo.Setup(repo => repo.GetEmployeeById(It.Is<string>(s => s.Equals(employeeId.ToString())))).Returns(employee);
             var service = new EmployeeService(mockRepo.Object);
 
-
             var getEmployeeResult = service.GetEmployeeById(employeeId.ToString());
 
             Assert.AreEqual(employee.ToEmloyeeDto(), getEmployeeResult);
@@ -30,24 +29,39 @@ namespace EmployeeManagament.Tests
         public void GetEmployeeByIdTest()
         {
             var mockRepo = new Mock<IEmployeeRepository>();
-            var employeeId = 2;
-            var employees = new List<Employee>() { GetFakeEmployee(employeeId) };
+            var employees = new List<Employee>() { GetFakeEmployee() };
 
             mockRepo.Setup(repo => repo.GetEmployees()).Returns(employees);
             var service = new EmployeeService(mockRepo.Object);
-
 
             var getEmployeeResult = service.GetEmployees();
 
             CollectionAssert.AreEqual(employees.ToEmloyeeDtoCollection(), getEmployeeResult);
         }
 
-        private static Employee GetFakeEmployee(int employeeId)
+
+        [Test]
+        public void GetEmployeeBySpecializationTest()
+        {
+            var mockRepo = new Mock<IEmployeeRepository>();
+            string specialization = "QA";
+            var employees = new List<Employee>() { GetFakeEmployee(specialization: specialization) };
+
+            mockRepo.Setup(repo => repo.GetEmployeesBySpecialization(It.Is<string>(s => s.Equals(specialization)))).Returns(employees);
+            var service = new EmployeeService(mockRepo.Object);
+
+
+            var getEmployeeResult = service.GetEmployeesBySpecialization(specialization);
+
+            CollectionAssert.AreEqual(employees.ToEmloyeeDtoCollection(), getEmployeeResult);
+        }
+
+        private static Employee GetFakeEmployee(int employeeId = 1, string specialization = "QA")
         {
             return new Employee()
             {
                 Name = "Tomas",
-                Specialization = "QA",
+                Specialization = specialization,
                 Salary = 900,
                 Id = employeeId,
                 Position = "Senior"
