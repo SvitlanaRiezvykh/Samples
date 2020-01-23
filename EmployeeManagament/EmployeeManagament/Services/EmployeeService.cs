@@ -11,10 +11,12 @@ namespace EmployeeManagament.Services
 {
     public class EmployeeService : IEmployeeService
     {
+        const string XmlPath = "App_data/Data.xml";
         readonly IEmployeeRepository EmployeeRepository;
+
         public EmployeeService()
         {
-            EmployeeRepository = new EmployeeRepository();
+            EmployeeRepository = new EmployeeRepository(XmlPath);
         }
 
         public EmployeeService(IEmployeeRepository employeeRepository)

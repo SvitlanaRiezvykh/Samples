@@ -10,8 +10,13 @@ namespace EmployeeManagament.Services
 {
     public class EmployeeRepository : IEmployeeRepository
     {
-        private const string XmlPath = "App_data/Data.xml";
+        private readonly string XmlPath;
         public XDocument Xmldoc { get; private set; }
+
+        public EmployeeRepository(string xmlPath)
+        {
+            XmlPath = xmlPath;
+        }
 
         public IEnumerable<Employee> GetEmployees()
         {
